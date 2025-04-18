@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  role_name: quizapp
+  author: BGL
+  description: Déploiement de l'application quiz-ansible
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: ubuntu
+      versions:
+        - buster
+        - bullseye
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+    - name: EL
+      versions:
+        - 8
+        - 9
+dependencies: []

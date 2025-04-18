@@ -1,0 +1,7 @@
+---
+debian_packages:
+  - git
+  - curl
+redhat_packages:
+  - git
+  - curl

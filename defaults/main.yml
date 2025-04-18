@@ -1,0 +1,4 @@
+---
+quizapp_repo: "https://github.com/franklin-tutorials/quiz-ansible.git"
+app_dir: "/opt/quiz-ansible"
+nodejs_version: "23"

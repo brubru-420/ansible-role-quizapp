@@ -1,0 +1,54 @@
+---
+- name: Update system packages
+  ansible.builtin.package:
+    update_cache: yes
+
+- name: Install required packages
+  ansible.builtin.package:
+    name: "{{ (ansible_os_family == 'RedHat') | ternary(redhat_packages, debian_packages) }}"
+    state: present
+
+- name: Add NodeSource repository
+  ansible.builtin.shell: |
+    curl -fsSL https://rpm.nodesource.com/setup_{{ nodejs_version }}.x | bash -
+  args:
+    executable: /bin/bash
+  when: ansible_os_family == 'RedHat'
+
+- name: Add NodeSource repository (Debian)
+  ansible.builtin.shell: |
+    curl -fsSL https://deb.nodesource.com/setup_{{ nodejs_version }}.x | bash -
+  args:
+    executable: /bin/bash
+  when: ansible_os_family == 'Debian'
+
+- name: Install Node.js
+  ansible.builtin.package:
+    name: nodejs
+    state: present
+
+- name: Clone quiz-ansible repo
+  ansible.builtin.git:
+    repo: "{{ quizapp_repo }}"
+    dest: "{{ app_dir }}"
+    version: HEAD
+
+- name: Install app dependencies
+  ansible.builtin.shell: npm install
+  args:
+    chdir: "{{ app_dir }}"
+
+- name: Build the application
+  ansible.builtin.shell: npm run build
+  args:
+    chdir: "{{ app_dir }}"
+
+- name: Install serve globally
+  ansible.builtin.npm:
+    name: serve
+    global: yes
+
+- name: Run the app with serve
+  ansible.builtin.shell: nohup serve -s dist &
+  args:
+    chdir: "{{ app_dir }}"
